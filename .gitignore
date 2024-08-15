@@ -1,0 +1,27 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Dependency directories
+.env
+.venv/
+Pipfile.lock
+
+# FastAPI server files
+*.log
+*.pid
+
+# Static files
+static/audio/
+
+# IDE or editor specific files
+.vscode/
+.idea/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
