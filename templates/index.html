@@ -1,24 +1,30 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Job Application Chatbot</title>
+    <title>Aqua - Chatbot</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body>
-    <h1>Welcome to the Job Application Chatbot</h1>
-    <form action="/upload-cv" method="post" enctype="multipart/form-data">
-      <label for="cv">Upload your CV:</label><br /><br />
-      <input type="file" id="cv" name="cv" /><br /><br />
-      <label for="job_field">Select Job Field:</label><br /><br />
-      <input
-        type="text"
-        id="job_field"
-        name="job_field"
-        placeholder="e.g. Software Engineer"
-      /><br /><br />
-      <input type="submit" value="Submit" />
-    </form>
+    <div class="container">
+      <h1>Aqua</h1>
+      <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
+        <div class="form-group">
+          <label for="cv">Upload CV:</label>
+          <input type="file" id="cv" name="cv" required />
+        </div>
+        <div class="form-group">
+          <label for="job_field">Job Field:</label>
+          <input type="text" id="job_field" name="job_field" required />
+        </div>
+        <button type="submit" class="btn-submit">Submit CV</button>
+      </form>
+      <div id="questions"></div>
+      <button onclick="evaluateAnswers()" class="btn-submit">
+        Submit Answers
+      </button>
+    </div>
+    <script src="/static/js/script.js"></script>
   </body>
 </html>
