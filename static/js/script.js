@@ -56,9 +56,57 @@ async function evaluateAnswers() {
         }
 
         const result = await response.json();
-        alert(`Your score is: ${result.score}`);
+        alert(`Your total score is: ${result.score}`);
     } catch (error) {
         console.error("Error evaluating answers:", error);
         alert("An error occurred while evaluating your answers. Please try again.");
     }
 }
+async function getCodingQuestion() {
+    try {
+        const response = await fetch("/generate-coding-question", {
+            method: "POST"
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok.");
+        }
+
+        const result = await response.json();
+        displayCodingQuestion(result.question);
+    } catch (error) {
+        console.error("Error fetching coding question:", error);
+        alert("An error occurred while fetching the coding question. Please try again.");
+    }
+}
+function displayCodingQuestion(question) {
+    const codingQuestionContainer = document.getElementById("coding-question");
+    codingQuestionContainer.innerHTML = `
+        <h2>Coding Question</h2>
+        <p>${question}</p>
+        <textarea id="coding-solution" placeholder="Write your code here..."></textarea>
+        <button onclick="submitCodingSolution()" class="btn-submit">Submit Solution</button>
+    `;
+}
+async function submitCodingSolution() {
+    const solution = document.getElementById("coding-solution").value;
+
+    try {
+        const response = await fetch("/evaluate-coding-solution", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ solution })
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok.");
+        }
+
+        const result = await response.json();
+        alert(`Your coding solution score is: ${result.score}`);
+    } catch (error) {
+        console.error("Error evaluating coding solution:", error);
+        alert("An error occurred while evaluating your coding solution. Please try again.");
+    }
+}
+
