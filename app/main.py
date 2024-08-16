@@ -65,6 +65,48 @@ async def evaluate_answers(answers: dict):
     score = evaluate_responses(answers)
     return JSONResponse(content={"score": score})
 
+@app.post("/generate-coding-question")
+async def generate_coding_question():
+    try:
+        # Generate a coding question
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that generates coding questions for technical interviews."},
+                {"role": "user", "content": "Generate a coding question for a technical interview."}
+            ],
+            max_tokens=100
+        )
+        coding_question = response.choices[0].message['content'].strip()
+        return {"question": coding_question}
+    except Exception as e:
+        print(f"Error generating coding question: {e}")
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
+@app.post("/evaluate-coding-solution")
+async def evaluate_coding_solution(solution: str):
+    try:
+        # Create a prompt for evaluating the coding solution
+        prompt = f"Evaluate the following coding solution. Provide a score from 1 to 10 based on correctness, efficiency, and clarity. Provide only the total score out of 10.\n\nSolution:\n{solution}\n\nScore:"
+
+        # Call OpenAI API for evaluation
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that evaluates coding solutions based on correctness, efficiency, and clarity. Provide only the total score out of 10 in your response."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=50
+        )
+        
+        # Extract the total score from the response
+        total_score = response.choices[0].message['content'].strip()
+        
+        return {"score": total_score}
+    except Exception as e:
+        print(f"Error evaluating coding solution: {e}")
+        return {"score": "Error"}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

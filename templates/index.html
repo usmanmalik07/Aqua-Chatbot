@@ -7,10 +7,22 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body>
+    <header>
+      <nav class="navbar">
+        <img class="logo" src="/static/audio/logo.png" alt="Aqua Logo" />
+        <ul class="nav-links">
+          <li><a href="#main">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
     <div class="container">
       <h1>Aqua</h1>
       <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
-        <div class="form-group">
+        <div class="form-group" id="main">
           <label for="cv">Upload CV:</label>
           <input type="file" id="cv" name="cv" required />
         </div>
@@ -21,10 +33,13 @@
         <button type="submit" class="btn-submit">Submit CV</button>
       </form>
       <div id="questions"></div>
+      <!-- Add this inside your container div -->
+      <div id="coding-question"></div>
       <button onclick="evaluateAnswers()" class="btn-submit">
         Submit Answers
       </button>
     </div>
+
     <script src="/static/js/script.js"></script>
   </body>
 </html>

@@ -1,29 +1,80 @@
-/* styles.css */
+/* Global Styles */
 body {
-    background-color: #000;
+    background: url('/static/audio/background.jpg') no-repeat center center fixed;
+    background-size: cover;
     color: #fff;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
+/* Header and Navbar */
+header {
+    padding: 10px 0;
+    position: relative;
+    height: 150%; /* Ensure header is above the background */
+     /* Light background for header */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 150%;
+    margin: 0 auto;
+    color: black;
+}
+
+.logo {
+    height: 50px; /* Adjust height as needed */
+    width: auto; /* Maintain aspect ratio */
+    opacity: 0.8;
+    background: none; /* Ensure no background color */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #000; /* Black text color for navbar links */
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #007BFF; /* Blue hover effect */
+}
+
+/* Container */
 .container {
     width: 80%;
     max-width: 900px;
     margin: 50px auto;
     padding: 20px;
-    background: #1c1c1c;
+    background: rgba(28, 28, 28, 0.9);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-h1 {
     text-align: center;
-    color: #f39c12;
+    background-color: #1b3a4b; /* Dark Blue theme for the container */
+    color: #fff;
 }
 
+/* Form */
 .form-group {
     margin-bottom: 15px;
+    text-align: left;
 }
 
 label {
@@ -38,12 +89,12 @@ input[type="text"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #333;
+    background-color: #264653; /* Dark teal input fields */
     color: #fff;
 }
 
 input[type="file"] {
-    border: 1px solid #444;
+    border: 1px solid #2a9d8f; /* Green border for file input */
 }
 
 .btn-submit {
@@ -52,7 +103,7 @@ input[type="file"] {
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #f39c12;
+    background-color: #2a9d8f; /* Green background for buttons */
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -60,9 +111,50 @@ input[type="file"] {
 }
 
 .btn-submit:hover {
-    background-color: #e67e22;
+    background-color: #007BFF; /* Blue hover effect */
 }
 
 #questions {
     margin-top: 20px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: relative; /* Changed to relative to avoid overlap issues */
+    width: 100%;
+    bottom: 0;
+}
+
+footer p {
+    margin: 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .container {
+        width: 90%;
+    }
+
+    .btn-submit {
+        width: 100%;
+    }
 }
