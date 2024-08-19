@@ -28,11 +28,10 @@ app.add_middleware(
 )
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 # Connect to MongoDB
 db = get_database()
-
 @app.get("/", response_class=HTMLResponse)
+
 async def read_root():
     with open("templates/index.html", "r") as file:
         html_content = file.read()

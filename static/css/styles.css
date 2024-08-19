@@ -12,8 +12,7 @@ body {
 header {
     padding: 10px 0;
     position: relative;
-    height: 150%; /* Ensure header is above the background */
-     /* Light background for header */
+    height: 150%;
 }
 
 .navbar {
@@ -27,10 +26,10 @@ header {
 }
 
 .logo {
-    height: 50px; /* Adjust height as needed */
-    width: auto; /* Maintain aspect ratio */
+    height: 50px;
+    width: auto;
     opacity: 0.8;
-    background: none; /* Ensure no background color */
+    background: none;
 }
 
 .nav-links {
@@ -45,7 +44,7 @@ header {
 }
 
 .nav-links a {
-    color: #000; /* Black text color for navbar links */
+    color: #000;
     text-decoration: none;
     font-size: 16px;
     padding: 8px 16px;
@@ -54,7 +53,7 @@ header {
 }
 
 .nav-links a:hover {
-    background-color: #007BFF; /* Blue hover effect */
+    background-color: #007BFF;
 }
 
 /* Container */
@@ -67,7 +66,7 @@ header {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
-    background-color: #1b3a4b; /* Dark Blue theme for the container */
+    background-color: #1b3a4b;
     color: #fff;
 }
 
@@ -75,6 +74,7 @@ header {
 .form-group {
     margin-bottom: 15px;
     text-align: left;
+    width: 95%;
 }
 
 label {
@@ -86,24 +86,37 @@ label {
 input[type="file"],
 input[type="text"] {
     width: 100%;
-    padding: 10px;
+    padding: 15px; /* Increased padding for more space */
     border: none;
     border-radius: 5px;
-    background-color: #264653; /* Dark teal input fields */
+    background-color: #264653;
     color: #fff;
+    font-size: 16px; /* Larger text for better readability */
 }
 
 input[type="file"] {
-    border: 1px solid #2a9d8f; /* Green border for file input */
+    border: 1px solid #2a9d8f;
+}
+
+textarea {
+    width: 100%;
+    height: 150px; /* Larger height for coding questions */
+    padding: 15px; /* Increased padding for more space */
+    border: none;
+    border-radius: 5px;
+    background-color: #264653;
+    color: #fff;
+    font-size: 16px; /* Larger text for better readability */
+    resize: vertical; /* Allows users to resize if needed */
 }
 
 .btn-submit {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 12px 24px;
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #2a9d8f; /* Green background for buttons */
+    background-color: #2a9d8f;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -111,7 +124,7 @@ input[type="file"] {
 }
 
 .btn-submit:hover {
-    background-color: #007BFF; /* Blue hover effect */
+    background-color: #007BFF;
 }
 
 #questions {
@@ -123,7 +136,7 @@ footer {
     text-align: center;
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.7);
-    position: relative; /* Changed to relative to avoid overlap issues */
+    position: relative;
     width: 100%;
     bottom: 0;
 }
@@ -156,5 +169,9 @@ footer p {
 
     .btn-submit {
         width: 100%;
+    }
+
+    textarea {
+        height: 200px; /* Provide more space for coding questions on smaller screens */
     }
 }
