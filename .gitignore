@@ -14,8 +14,7 @@ Pipfile.lock
 *.log
 *.pid
 
-# Static files
-static/audio/
+
 
 # IDE or editor specific files
 .vscode/
