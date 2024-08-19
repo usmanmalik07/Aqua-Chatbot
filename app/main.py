@@ -26,7 +26,6 @@ app.add_middleware(
     allow_methods=["*"],  # Adjust this as needed.
     allow_headers=["*"],  # Adjust this as needed.
 )
-
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -62,14 +61,15 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
 
 @app.post("/evaluate-answers")
 async def evaluate_answers(answers: dict):
-    score = evaluate_responses(answers)
+    score = evaluate_answers(answers)
     return JSONResponse(content={"score": score})
 
 @app.post("/generate-coding-question")
+
 async def generate_coding_question():
     try:
-        # Generate a coding question
-        response = openai.ChatCompletion.create(
+        # Generate the first coding question
+        response1 = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an assistant that generates coding questions for technical interviews."},
@@ -77,10 +77,23 @@ async def generate_coding_question():
             ],
             max_tokens=100
         )
-        coding_question = response.choices[0].message['content'].strip()
-        return {"question": coding_question}
+        coding_question_1 = response1.choices[0].message['content'].strip()
+
+        # Generate the second coding question
+        response2 = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that generates coding questions for technical interviews."},
+                {"role": "user", "content": "Generate another coding question for a technical interview."}
+            ],
+            max_tokens=100
+        )
+        coding_question_2 = response2.choices[0].message['content'].strip()
+
+        # Return both questions, the frontend can manage displaying one by one
+        return {"questions": [coding_question_1, coding_question_2]}
     except Exception as e:
-        print(f"Error generating coding question: {e}")
+        print(f"Error generating coding questions: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
 @app.post("/evaluate-coding-solution")
 async def evaluate_coding_solution(solution: str):
