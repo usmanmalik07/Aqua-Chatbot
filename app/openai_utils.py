@@ -12,7 +12,7 @@ def generate_questions(cv_text: str, job_field: str) -> list:
             model="gpt-3.5-turbo",  # You can use "gpt-4" if you have access to it
             messages=[
                 {"role": "system", "content": "You are an assistant that generates interview questions based on CV content."},
-                {"role": "user", "content": f"Generate interview questions for a job in {job_field} based on the following CV text:\n{cv_text}"}
+                {"role": "user", "content": f"Generate interview questions for a job if only the job field matches the cv text in {job_field} based on the following CV text:\n{cv_text}"}
             ],
             max_tokens=150
         )
