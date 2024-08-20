@@ -1,18 +1,20 @@
 /* Global Styles */
 body {
-    background: url('/static/audio/background.jpg') no-repeat center center fixed;
+    background: url('/static/audio/background2.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif; /* Updated font for a modern look */
     margin: 0;
     padding: 0;
+    transition: background 0.5s ease; /* Smooth background transition */
 }
 
 /* Header and Navbar */
 header {
-    padding: 10px 0;
+    padding: 20px 0;
     position: relative;
     height: 150%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
 }
 
 .navbar {
@@ -22,18 +24,23 @@ header {
     width: 100%;
     height: 200%;
     margin: 0 auto;
-    color: black;
+    padding: 5 20px;
+    color: #fff;
+    /* Gradient background for the navbar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for navbar */
 }
-.hidden {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-}
+
 .logo {
-    height: 50px;
+    height: 60px;
     width: auto;
-    opacity: 0.8;
+    opacity: 0.9;
     background: none;
+    transition: transform 0.3s ease;
+    color: #fff; /* Smooth logo transition */
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
 }
 
 .nav-links {
@@ -48,16 +55,17 @@ header {
 }
 
 .nav-links a {
-    color: #000;
+    color: #fff; /* White color for the links */
     text-decoration: none;
-    font-size: 16px;
-    padding: 8px 16px;
+    font-size: 18px;
+    padding: 10px 20px;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for background and color */
 }
 
 .nav-links a:hover {
-    background-color: #007BFF;
+    background-color: #007BFF; /* Updated hover effect */
+    color: #fff;
 }
 
 /* Container */
@@ -65,37 +73,43 @@ header {
     width: 80%;
     max-width: 900px;
     margin: 50px auto;
-    padding: 20px;
-    background: rgba(28, 28, 28, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    background: rgba(30, 30, 30, 0.85); /* Slightly darker background */
+    border-radius: 10px; /* Slightly rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* More pronounced shadow */
     text-align: center;
-    background-color: #0e6783;
+    background-color: #011116;
     color: #fff;
+    transition: transform 0.3s ease; /* Smooth transition for container */
+}
+
+.container:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
 }
 
 /* Form */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     text-align: left;
     width: 95%;
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
-    color: #fff;
+    margin-bottom: 10px;
+    color: #2a9d8f;
+    font-weight: bold; /* Bolder labels for emphasis */
 }
 
 input[type="file"],
 input[type="text"] {
     width: 100%;
-    padding: 15px; /* Increased padding for more space */
+    padding: 15px;
     border: none;
     border-radius: 5px;
     background-color: #264653;
     color: #fff;
-    font-size: 16px; /* Larger text for better readability */
+    font-size: 16px;
 }
 
 input[type="file"] {
@@ -104,23 +118,26 @@ input[type="file"] {
 
 textarea {
     width: 100%;
-    height: 150px; /* Larger height for coding questions */
-    padding: 15px; /* Increased padding for more space */
+    height: 150px;
+    padding: 15px;
     border: none;
     border-radius: 5px;
     background-color: #264653;
     color: #fff;
-    font-size: 16px; /* Larger text for better readability */
-    resize: vertical; /* Allows users to resize if needed */
+    font-size: 16px;
+    resize: vertical;
 }
+
 #result-container {
     margin-top: 20px;
     font-size: 18px;
     text-align: center;
+    color: #FFD700; /* Gold color for results */
 }
+
 .btn-submit {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 14px 28px;
     margin: 10px 0;
     border: none;
     border-radius: 5px;
@@ -128,11 +145,12 @@ textarea {
     color: #fff;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
 }
 
 .btn-submit:hover {
     background-color: #007BFF;
+    transform: translateY(-3px); /* Slight lift on hover */
 }
 
 #questions {
@@ -142,11 +160,12 @@ textarea {
 /* Footer */
 footer {
     text-align: center;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.8);
     position: relative;
     width: 100%;
     bottom: 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); /* Shadow for footer */
 }
 
 footer p {
@@ -160,6 +179,7 @@ footer p {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
+        padding: 20px 10px;
     }
 
     .nav-links {
@@ -180,6 +200,6 @@ footer p {
     }
 
     textarea {
-        height: 200px; /* Provide more space for coding questions on smaller screens */
+        height: 200px;
     }
 }
