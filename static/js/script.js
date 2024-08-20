@@ -53,7 +53,7 @@ function displayNextQuestion() {
             <div style="display: flex; align-items: center;">
                 <input type="text" id="answer_${currentQuestionIndex}" name="answers[${currentQuestionIndex}]" style="width: 100%; height: 100%">
                 <button onclick="startSpeechRecognition(${currentQuestionIndex})" style="margin-left: 10px; background: none; border: none; cursor: pointer;">
-                    <img src="/static/icons/microphone.png" alt="Speak" style="width: 24px; height: 24px;">
+                    <img src="/static/audio/microphone.png" alt="Speak" style="width: 24px; height: 24px;">
                 </button>
             </div>
             <div style="display: flex; justify-content: center; margin-top: 10px;">
