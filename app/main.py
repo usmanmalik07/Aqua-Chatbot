@@ -60,8 +60,12 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
 
 @app.post("/evaluate-answers")
 async def evaluate_answers(answers: dict):
-    score = evaluate_answers(answers)
-    return JSONResponse(content={"score": score})
+    try:
+        score = evaluate_responses(answers)
+        return JSONResponse(content={"score": score})
+    except Exception as e:
+        print(f"Error evaluating answers: {e}")
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
 
 @app.post("/generate-coding-question")
 
@@ -117,8 +121,34 @@ async def evaluate_coding_solution(solution: str):
     except Exception as e:
         print(f"Error evaluating coding solution: {e}")
         return {"score": "Error"}
+@app.post("/speech-to-text")
+async def speech_to_text(audio: UploadFile = File(...)):
+    try:
+        audio_content = await audio.read()
 
+        # Use 'requests' to send a file-like object with 'name'
+        import requests
 
+        # Create a temporary file-like object with 'name' attribute
+        class NamedBytesIO(io.BytesIO):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.name = kwargs.get('name', 'audio.wav')
+
+        audio_file = NamedBytesIO(audio_content, name=audio.filename)
+
+        response = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio_file,
+            format="wav"  # Ensure this matches the actual audio format
+        )
+
+        transcribed_text = response['text']
+        return JSONResponse(content={"text": transcribed_text})
+
+    except Exception as e:
+        print(f"Error in speech-to-text conversion: {e}")
+        return JSONResponse(content={"error": "An error occurred during speech-to-text conversion."}, status_code=500)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
