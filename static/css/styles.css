@@ -20,11 +20,15 @@ header {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 150%;
+    height: 200%;
     margin: 0 auto;
     color: black;
 }
-
+.hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
 .logo {
     height: 50px;
     width: auto;
@@ -66,7 +70,7 @@ header {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
-    background-color: #1b3a4b;
+    background-color: #0e6783;
     color: #fff;
 }
 
@@ -109,7 +113,11 @@ textarea {
     font-size: 16px; /* Larger text for better readability */
     resize: vertical; /* Allows users to resize if needed */
 }
-
+#result-container {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+}
 .btn-submit {
     display: inline-block;
     padding: 12px 24px;
