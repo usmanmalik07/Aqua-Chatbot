@@ -29,6 +29,26 @@ header {
     /* Gradient background for the navbar */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for navbar */
 }
+/* Loading Spinner */
+.spinner {
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 .logo {
     height: 60px;

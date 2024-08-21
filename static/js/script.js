@@ -21,25 +21,42 @@ async function uploadCv() {
         }
 
         const result = await response.json();
-
-        // Debugging: Log result to see if data is coming correctly
         console.log(result);
 
-        // Hide the form container
-        const formElement = document.getElementById("cv-form");
-        if (formElement) {
-            formElement.style.display = "none";
+        if (result.questions && result.questions.length > 0 && result.questions[0] === "The job field does not match the CV text. No questions generated.") {
+            displayTryAgainButton();
+            const formElement = document.getElementById("cv-form");
+            if (formElement) {
+                formElement.style.display = "none";
+            } else {
+                console.error("Form element not found");
+            }
         } else {
-            console.error("Form element not found");
-        }
-        console.log(document.getElementById("cv-form"));
+            // Hide the form container
+            const formElement = document.getElementById("cv-form");
+            if (formElement) {
+                formElement.style.display = "none";
+            } else {
+                console.error("Form element not found");
+            }
 
-        questions = result.questions;
-        displayNextQuestion();
+            questions = result.questions;
+            displayNextQuestion();
+        }
     } catch (error) {
         console.error("Error uploading CV:", error);
         alert("An error occurred while uploading the CV. Please try again.");
     }
+}
+
+function displayTryAgainButton() {
+    const questionsContainer = document.getElementById("questions");
+    questionsContainer.innerHTML = `
+        <p style="display: flex; justify-content: center; margin-top: 20px; color: #2a9d8f;">The job field does not match the CV text. No questions generated.</p>
+        <div style="display: flex; justify-content: center; margin-top: 20px; color: #2a9d8f;">
+            <button onclick="location.reload()" class="btn-submit">Try Again</button>
+        </div>
+    `;
 }
 
 function displayNextQuestion() {

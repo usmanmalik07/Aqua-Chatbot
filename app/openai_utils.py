@@ -7,21 +7,37 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def generate_questions(cv_text: str, job_field: str) -> list:
     try:
-        # Generate questions using the new OpenAI API
+        # Step 1: Check if the job field matches the CV text
+        match_check_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that checks if a job field is relevant to the given CV text."},
+                {"role": "user", "content": f"Does the job field '{job_field}' is relevant to the following CV text?\n{cv_text}"}
+            ],
+            max_tokens=50
+        )
+        match_result = match_check_response.choices[0].message['content'].strip().lower()
+        
+        # If the match result indicates no match, return an empty list or a message
+        if "no" in match_result:
+            return ["The job field does not match the CV text. No questions generated."]
+
+        
+        # Step 2: Generate questions based on the CV text and job field
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # You can use "gpt-4" if you have access to it
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an assistant that generates interview questions based on CV content."},
-                {"role": "user", "content": f"Generate interview questions for a job if only the job field matches the cv text in {job_field} based on the following CV text:\n{cv_text}"}
+                {"role": "user", "content": f"Generate interview questions for the job field '{job_field}' based on the following CV text:\n{cv_text}"}
             ],
             max_tokens=150
         )
         questions = response.choices[0].message['content'].strip().split('\n')
         return questions
+    
     except Exception as e:
         print(f"Error generating questions: {e}")
         return []
-
 def evaluate_responses(responses: dict) -> dict:
     try:
         # Create a prompt for evaluating the answers
