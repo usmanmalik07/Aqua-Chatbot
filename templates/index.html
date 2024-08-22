@@ -7,34 +7,124 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body>
-    <header>
-      <nav class="navbar">
-        <img class="logo" src="/static/audio/logo1.png" alt="Aqua Logo" />
-        <ul class="nav-links">
-          <li><a href="#main">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
+    <div class="background">
+      <header id="main">
+        <nav class="navbar">
+          <img class="logo" src="/static/audio/logo1.png" alt="Aqua Logo" />
+          <h1 class="logo">Aqua</h1>
+          <ul class="nav-links">
+            <li><a href="#main">Home</a></li>
+            <li><a href="#about-us">About</a></li>
+            <li><a href="#companies">Companies</a></li>
+            <li><a href="#">Interviews</a></li>
+          </ul>
+        </nav>
+      </header>
 
-    <div class="container">
-      <h1>Aqua</h1>
-      <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
-        <div class="form-group" id="main">
-          <label for="cv">Upload CV:</label>
-          <input type="file" id="cv" name="cv" required />
-        </div>
-        <div class="form-group">
-          <label for="job_field">Job Field:</label>
-          <input type="text" id="job_field" name="job_field" required />
-        </div>
-        <button type="submit" class="btn-submit">Submit CV</button>
-      </form>
-      <div id="questions" class="form-group"></div>
-      <div id="coding-question" class="form-group"></div>
-      <div id="result-container"></div>
+      <div class="container">
+        <h1>Aqua</h1>
+        <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
+          <div class="form-group">
+            <label for="cv">Upload CV:</label>
+            <input type="file" id="cv" name="cv" required />
+          </div>
+          <div class="form-group">
+            <label for="job_field">Job Field:</label>
+            <input type="text" id="job_field" name="job_field" required />
+          </div>
+          <button type="submit" class="btn-submit">Submit CV</button>
+        </form>
+
+        <div id="questions" class="form-group"></div>
+        <div id="coding-question" class="form-group"></div>
+        <div id="result-container"></div>
+      </div>
+
+      <!-- Companies Section -->
+      <div id="companies" class="companies-container">
+        <a
+          href="https://www.linkedin.com/company/vertotechnologies/"
+          class="company-link"
+          target="_blank"
+        >
+          <div class="company-card">
+            <img
+              src="/static/audio/logo1.png"
+              alt="Company 1 Logo"
+              class="company-logo"
+            />
+            <h3>VertoTech</h3>
+            <p>
+              VertoTech is a leading tech firm specializing in AI-driven
+              solutions.
+            </p>
+          </div>
+        </a>
+        <a
+          href="https://www.linkedin.com/company/adept-tech-solutions"
+          class="company-link"
+          target="_blank"
+        >
+          <div class="company-card">
+            <img
+              src="/static/audio/karigartech_logo.jpeg"
+              alt="Karigar"
+              class="company-logo"
+            />
+            <h3>Karigar</h3>
+            <p>
+              Karigar focuses on developing innovative software products for
+              global markets.
+            </p>
+          </div>
+        </a>
+        <a
+          href="https://www.linkedin.com/company/adept-tech-solutions"
+          class="company-link"
+          target="_blank"
+        >
+          <div class="company-card">
+            <img
+              src="/static/audio/ats.png"
+              alt="Company 3 Logo"
+              class="company-logo"
+            />
+            <h3>Adept Tech Solutions</h3>
+            <p>
+              Adept Tech Solutions is a renowned consulting firm offering
+              strategic insights.
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <!-- About Us Section -->
+      <div id="about-us" class="about-us">
+        <img src="/static/audio/logo1.png" alt="Aqua Logo" class="about-logo" />
+        <h2>About Us</h2>
+        <p>
+          Welcome to Aqua, your go-to platform for seamless job applications and
+          interview preparation.
+        </p>
+        <p>
+          We aim to bridge the gap between job seekers and employers with
+          innovative AI-driven solutions.
+        </p>
+
+        <h3>What We Do</h3>
+        <ul>
+          <li>Offer personalized job recommendations.</li>
+          <li>Provide AI-driven interviews.</li>
+          <li>Connect job seekers with top companies.</li>
+        </ul>
+
+        <h3>What We Offer</h3>
+        <ul>
+          <li>Real-time job updates.</li>
+          <li>Interactive chatbot for guidance.</li>
+          <li>Comprehensive interview resources.</li>
+        </ul>
+      </div>
     </div>
 
     <script src="/static/js/script.js"></script>

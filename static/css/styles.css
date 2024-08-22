@@ -6,15 +6,19 @@ body {
     font-family: 'Roboto', sans-serif; /* Updated font for a modern look */
     margin: 0;
     padding: 0;
-    transition: background 0.5s ease; /* Smooth background transition */
+    transition: background 0.5s ease; 
+    /* Smooth background transition */
 }
-
+html {
+    scroll-behavior: smooth;
+    background: rgba(0, 0, 0, 0.85);
+}
 /* Header and Navbar */
 header {
     padding: 20px 0;
     position: relative;
     height: 150%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background: rgba(0, 0, 0, 0.85); /* Semi-transparent background */
 }
 
 .navbar {
@@ -28,26 +32,10 @@ header {
     color: #fff;
     /* Gradient background for the navbar */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for navbar */
+    background: rgba(0, 0, 0, 0.85);
 }
-/* Loading Spinner */
-.spinner {
-    border: 8px solid rgba(255, 255, 255, 0.3);
-    border-top: 8px solid #fff;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-}
-
-/* Spinner Animation */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.background {
+    background: rgba(0, 0, 0, 0.85);
 }
 
 .logo {
@@ -94,7 +82,7 @@ header {
     max-width: 900px;
     margin: 50px auto;
     padding: 30px;
-    background: rgba(30, 30, 30, 0.85); /* Slightly darker background */
+    background: rgba(0, 0, 0, 0.85); /* Slightly darker background */
     border-radius: 10px; /* Slightly rounded corners */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* More pronounced shadow */
     text-align: center;
@@ -176,6 +164,115 @@ textarea {
 #questions {
     margin-top: 20px;
 }
+/* About Us Section */
+.about-us {
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.85); /* Slightly darker background */
+    border-radius: 1px; /* Rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Pronounced shadow */
+    text-align: center;
+    color: #fff;
+}
+
+.about-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.about-us h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #FFD700; /* Gold color for headings */
+}
+
+.about-us h3 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for subheadings */
+}
+
+.about-us p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #e0e0e0;
+    text-align: center; /* Centered text */
+}
+
+.about-us ul {
+    list-style: none;
+    padding: 0;
+    text-align: center; /* Center bullet points */
+}
+
+.about-us ul li {
+    font-size: 16px;
+    margin-bottom: 10px;
+    position: relative;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    padding-left: 20px;
+}
+
+.about-us ul li::before {
+    content: '•';
+    color: #FFD700; /* Gold bullet points */
+    font-size: 18px;
+    line-height: 1.6;
+    margin-right: 10px;
+}
+/* Companies Section */
+.companies-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 50px auto;
+    padding: 30px;
+    max-width: 900px;
+    background: rgba(0, 0, 0, 0.85);
+     /* Consistent background with other sections */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Pronounced shadow */
+    text-align: center;
+    color: #fff;
+}
+
+.company-card {
+    flex: 1;
+    margin: 0 10px;
+    padding: 20px;
+    background-color: #011116; /* Match container background */
+    border-radius: 10px;
+    transition: transform 0.3s ease; /* Smooth transition for card */
+}
+
+.company-card:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.company-logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.company-card h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for company name */
+}
+
+.company-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+
 
 /* Footer */
 footer {

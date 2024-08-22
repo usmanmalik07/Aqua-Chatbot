@@ -91,8 +91,8 @@ async def generate_coding_question():
             ],
             max_tokens=100
         )
+        
         coding_question_2 = response2.choices[0].message['content'].strip()
-
         # Return both questions, the frontend can manage displaying one by one
         return {"questions": [coding_question_1, coding_question_2]}
     except Exception as e:
