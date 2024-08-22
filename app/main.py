@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 from .database import connect_to_mongo, get_database
 from .openai_utils import generate_questions, evaluate_responses
-from fastapi import HTTPException
+import requests
 
 load_dotenv()
 
@@ -21,29 +21,32 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this as needed.
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Adjust this as needed.
-    allow_headers=["*"],  # Adjust this as needed.
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Connect to MongoDB
 db = get_database()
-@app.get("/", response_class=HTMLResponse)
 
+@app.get("/", response_class=HTMLResponse)
 async def read_root():
     with open("templates/index.html", "r") as file:
         html_content = file.read()
     return HTMLResponse(content=html_content, status_code=200)
 
+# Add a global variable or a way to store the email address
+email_address = None
+
 @app.post("/upload-cv")
 async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
+    global email_address
     try:
-        # Read file content as binary
         cv_content = await cv.read()
-        
-        # Extract text from PDF
         pdf_text = ""
         with pdfplumber.open(io.BytesIO(cv_content)) as pdf:
             for page in pdf.pages:
@@ -51,7 +54,11 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
                 if page_text:
                     pdf_text += page_text
 
-        # Generate questions based on the CV text and job field
+        # Extract email address from CV text (example extraction, adjust as needed)
+        import re
+        email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', pdf_text)
+        email_address = email_match.group(0) if email_match else 'no-reply@example.com'
+
         questions = generate_questions(pdf_text, job_field)
         return {"questions": questions}
     except Exception as e:
@@ -61,14 +68,32 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
 @app.post("/evaluate-answers")
 async def evaluate_answers(answers: dict):
     try:
-        score = evaluate_responses(answers)
+        score_response = evaluate_responses(answers)
+
+        # Debugging output
+        print("Received score response:", score_response)
+
+        # Ensure the score is a number
+        if isinstance(score_response, dict) and 'score' in score_response:
+            score = score_response['score']
+        else:
+            score = score_response
+
+        if not isinstance(score, (int, float)):
+            raise ValueError("Score is not a valid number.")
+        
+        # Send email if score is greater than 7
+        if score > 7 and email_address != 'no-reply@example.com':
+            subject = "Your Job Application Status"
+            body = f"Congratulations! Your application score is {score}. You have been accepted."
+            send_email(email_address, subject, body)
+
         return JSONResponse(content={"score": score})
     except Exception as e:
         print(f"Error evaluating answers: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
 
 @app.post("/generate-coding-question")
-
 async def generate_coding_question():
     try:
         # Generate the first coding question
@@ -98,6 +123,7 @@ async def generate_coding_question():
     except Exception as e:
         print(f"Error generating coding questions: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
+
 @app.post("/evaluate-coding-solution")
 async def evaluate_coding_solution(solution: str):
     try:
@@ -121,34 +147,26 @@ async def evaluate_coding_solution(solution: str):
     except Exception as e:
         print(f"Error evaluating coding solution: {e}")
         return {"score": "Error"}
-@app.post("/speech-to-text")
-async def speech_to_text(audio: UploadFile = File(...)):
+
+def send_email(to_address: str, subject: str, body: str):
     try:
-        audio_content = await audio.read()
-
-        # Use 'requests' to send a file-like object with 'name'
-        import requests
-
-        # Create a temporary file-like object with 'name' attribute
-        class NamedBytesIO(io.BytesIO):
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
-                self.name = kwargs.get('name', 'audio.wav')
-
-        audio_file = NamedBytesIO(audio_content, name=audio.filename)
-
-        response = openai.Audio.transcribe(
-            model="whisper-1",
-            file=audio_file,
-            format="wav"  # Ensure this matches the actual audio format
+        elastic_email_api_key = os.getenv('ELASTIC_EMAIL_API_KEY')
+        response = requests.post(
+            'https://api.elasticemail.com/v2/email/send',
+            data={
+                'apikey': elastic_email_api_key,
+                'from': 'usmanmalik.dev@gmail.com',  # Replace with your Elastic Email sender address
+                'to': to_address,
+                'subject': subject,
+                'text': body
+            }
         )
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error sending email: {e}")
+        return {"error": str(e)}
 
-        transcribed_text = response['text']
-        return JSONResponse(content={"text": transcribed_text})
-
-    except Exception as e:
-        print(f"Error in speech-to-text conversion: {e}")
-        return JSONResponse(content={"error": "An error occurred during speech-to-text conversion."}, status_code=500)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
