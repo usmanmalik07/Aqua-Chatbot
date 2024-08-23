@@ -10,7 +10,7 @@ import os
 from .database import connect_to_mongo, get_database
 from .openai_utils import generate_questions, evaluate_responses
 import requests
-
+import re
 load_dotenv()
 
 app = FastAPI()
@@ -32,19 +32,19 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Connect to MongoDB
 db = get_database()
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     with open("templates/index.html", "r") as file:
-        
         html_content = file.read()
     return HTMLResponse(content=html_content, status_code=200)
 
 # Add a global variable or a way to store the email address
 email_address = None
 
-@app.post("/upload-cv") 
+@app.post("/upload-cv")
 async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
-    global email_address
+    global email_address, user_name
     try:
         cv_content = await cv.read()
         pdf_text = ""
@@ -54,44 +54,75 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
                 if page_text:
                     pdf_text += page_text
 
-        # Extract email address from CV text (example extraction, adjust as needed)
-        import re
-        email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', pdf_text)
-        email_address = email_match.group(0) if email_match else 'no-reply@example.com'
+        # Use OpenAI to extract name and email address
+        openai_prompt = f"""
+        Extract the name and email address from the following CV text.
+        Format your response as follows:
+        - Name: [Full Name]
+        - Email: [Email Address]
 
+        The CV text is:
+        {pdf_text}
+        """
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": openai_prompt}
+            ],
+            max_tokens=150,
+            temperature=0
+        )
+
+        # Extract the result from the response
+        extraction_result = response.choices[0].message['content'].strip()
+        lines = extraction_result.split("\n")
+        user_name = lines[0].replace("Name: ", "").strip()
+        email_address = lines[1].replace("Email: ", "").strip()
+
+        # Optional: Format the name for a more specific output
+        formatted_name = f"{user_name}"
+        
         questions = generate_questions(pdf_text, job_field)
-        return {"questions": questions}
+        return {"questions": questions, "email_address": email_address, "user_name": formatted_name}
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
 
 @app.post("/evaluate-answers")
 async def evaluate_answers(answers: dict):
+    global email_address
     try:
-        score_response = evaluate_responses(answers)
+        # Separate normal answers and coding answers
+        normal_answers = {k: v for k, v in answers.items() if not k.startswith("coding_")}
+        coding_answers = {k: v for k, v in answers.items() if k.startswith("coding_")}
 
-        # Debugging output
-        print("Received score response:", score_response)
+        # Evaluate normal answers
+        normal_scores = {}
+        for question, answer in normal_answers.items():
+            score = evaluate_responses({"question": question, "answer": answer})
+            # Ensure the score is an integer
+            normal_scores[question] = score["score"]
 
-        # Extract the numeric score from the response
-        import re
-        if isinstance(score_response, dict) and 'score' in score_response:
-            # Use regex to extract the numeric score
-            score_match = re.search(r'\d+', score_response['score'])
-            score = int(score_match.group()) if score_match else None
-        else:
-            score = score_response
-        # Ensure the score is a valid number
-        if score is None or not isinstance(score, (int, float)):
-            raise ValueError("Score is not a valid number.")
-        
+        # Evaluate coding answers
+        coding_scores = {}
+        for question, solution in coding_answers.items():
+            response = await evaluate_coding_solution(solution)
+            # Ensure the score is an integer
+            coding_scores[question] = response["score"]
+
+        # Calculate the total score
+        total_score = sum(normal_scores.values()) + sum(coding_scores.values())
+        total_score = total_score / (len(normal_answers)+len(coding_answers))
+
         # Send email if score is greater than 7
-        if score > 7 and email_address != 'no-reply@example.com':
+        if total_score > 7 and email_address != 'no-reply@example.com':
             subject = "Your Job Application Status"
-            body = f"Congratulations! Your application score is {score}. You have been accepted."
+            body = f"Congratulations! Your application score is {total_score}. You have been accepted."
             send_email(email_address, subject, body)
 
-        return JSONResponse(content={"score": score})
+        return JSONResponse(content={"score": total_score})
     except Exception as e:
         print(f"Error evaluating answers: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
@@ -134,7 +165,7 @@ async def evaluate_coding_solution(solution: str):
         prompt = f"Evaluate the following coding solution. Provide a score from 1 to 10 based on correctness, efficiency, and clarity. Provide only the total score out of 10.\n\nSolution:\n{solution}\n\nScore:"
 
         # Call OpenAI API for evaluation
-        response = openai.ChatCompletion.create(
+        response = await openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an assistant that evaluates coding solutions based on correctness, efficiency, and clarity. Provide only the total score out of 10 in your response."},
@@ -144,12 +175,15 @@ async def evaluate_coding_solution(solution: str):
         )
         
         # Extract the total score from the response
-        total_score = response.choices[0].message['content'].strip()
+        total_score_str = response.choices[0].message['content'].strip()
+        total_score = int(total_score_str) if total_score_str.isdigit() else 0
         
         return {"score": total_score}
     except Exception as e:
         print(f"Error evaluating coding solution: {e}")
-        return {"score": "Error"}
+        return {"score": 0}  # Return 0 in case of an error
+
+
 
 def send_email(to_address: str, subject: str, body: str):
     try:

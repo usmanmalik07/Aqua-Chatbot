@@ -11,7 +11,6 @@
       <header id="main">
         <nav class="navbar">
           <img class="logo" src="/static/audio/logo1.png" alt="Aqua Logo" />
-          <h1 class="logo">Aqua</h1>
           <ul class="nav-links">
             <li><a href="#main">Home</a></li>
             <li><a href="#about-us">About</a></li>
@@ -24,9 +23,9 @@
       <div class="container">
         <div id="loading-container">
           <h1>Aqua</h1>
-          <div id="loading-spinner" class="spinner" style="display: none;"></div>
-          <p id="loading-text" style="display: none;">Loading</p>
-      </div>
+          <div id="loading-spinner" class="spinner" style="display: none"></div>
+          <p id="loading-text" style="display: none">Loading</p>
+        </div>
         <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
           <div class="form-group">
             <label for="cv">Upload CV:</label>
@@ -38,14 +37,27 @@
           </div>
           <button type="submit" class="btn-submit">Submit CV</button>
         </form>
+        <!-- Display user info -->
+      <div id="user-info" class="user-info"></div>
+      
+        <!-- Display questions and other elements -->
+        <div id="questions" class="form-group"></div>
+        <div id="coding-question" class="form-group"></div>
+        <button id="submit-answers-button" onclick="submitAnswers()" style="display: none">Submit Answers</button>
+        <div id="result-container"></div>
+      </div>
         <!-- Spinner HTML -->
-
-
 
         <div id="questions" class="form-group"></div>
         <div id="coding-question" class="form-group"></div>
+        <button
+          id="submit-answers-button"
+          onclick="submitAnswers()"
+          style="display: none"
+        >
+          Submit Answers
+        </button>
         <div id="result-container"></div>
-        
       </div>
 
       <!-- Companies Section -->

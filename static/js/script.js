@@ -3,7 +3,8 @@ let questions = [];
 let codingQuestions = [];
 let currentCodingQuestionIndex = 0;
 let answers = {}; // To store answers for all questions
-document.getElementById("submit-answers-button").disabled = true;
+
+document.getElementById("submit-answers-button").style.display = "none";
 
 // Function to show the spinner
 function showSpinner() {
@@ -14,6 +15,7 @@ function showSpinner() {
 function hideSpinner() {
     document.getElementById("loading-spinner").style.display = "none";
 }
+
 async function uploadCv() {
     showSpinner();
     const formData = new FormData();
@@ -31,7 +33,7 @@ async function uploadCv() {
         }
 
         const result = await response.json();
-        
+
         console.log(result);
 
         if (result.questions && result.questions.length > 0 && result.questions[0] === "The job field does not match the CV text. No questions generated.") {
@@ -51,14 +53,24 @@ async function uploadCv() {
                 console.error("Form element not found");
             }
 
+            // Display user info
+            const userInfo = document.getElementById("user-info");
+            if (userInfo) {
+                userInfo.innerHTML = `
+                    <p>Welcome, ${result.user_name}</p>
+                    <p>Email: ${result.email_address}</p>
+                `;
+            } else {
+                console.error("User info container not found");
+            }
+
             questions = result.questions;
             displayNextQuestion();
         }
     } catch (error) {
         console.error("Error uploading CV:", error);
         alert("An error occurred while uploading the CV. Please try again.");
-    }
-    finally {
+    } finally {
         hideSpinner(); // Hide spinner after the fetch completes
     }
 }
@@ -66,108 +78,38 @@ async function uploadCv() {
 function displayTryAgainButton() {
     const questionsContainer = document.getElementById("questions");
     questionsContainer.innerHTML = `
-        <p style="display: flex; justify-content: center; margin-top: 20px; color: #2a9d8f;">The job field does not match the CV text. No questions generated.</p>
-        <div style="display: flex; justify-content: center; margin-top: 20px; color: #2a9d8f;">
-            <button onclick="location.reload()" class="btn-submit">Try Again</button>
-        </div>
+        <p>No questions generated as the job description doesn't match the CV text.</p>
+        <button onclick="window.location.href='/'">Try Again</button>
     `;
 }
 
 function displayNextQuestion() {
     const questionsContainer = document.getElementById("questions");
-    questionsContainer.innerHTML = ""; // Clear previous question
+    questionsContainer.innerHTML = `
+        <p>${questions[currentQuestionIndex]}</p>
+        <textarea id="answer"></textarea>
+        <br>
+        <button onclick="saveAnswer()">Next</button>
+    `;
+}
+
+function saveAnswer() {
+    const answer = document.getElementById("answer").value;
+    answers[`question_${currentQuestionIndex + 1}`] = answer;
+    currentQuestionIndex++;
 
     if (currentQuestionIndex < questions.length) {
-        const questionElement = document.createElement("div");
-        questionElement.innerHTML = `
-            <label for="answer_${currentQuestionIndex}">${questions[currentQuestionIndex]}</label>
-            <div style="display: flex; align-items: center;">
-                <input type="text" id="answer_${currentQuestionIndex}" name="answers[${currentQuestionIndex}]" style="width: 100%; height: 100%">
-                <button onclick="startSpeechRecognition(${currentQuestionIndex})" style="margin-left: 10px; background: none; border: none; cursor: pointer;">
-                    <img src="/static/audio/logo.svg" alt="Speak" style="width: 24px; height: 24px;">
-                </button>
-            </div>
-            <div style="display: flex; justify-content: center; margin-top: 10px;">
-                <button onclick="submitAnswer()" class="btn-submit">Done</button>
-            </div>
-        `;
-        questionsContainer.appendChild(questionElement);
+        displayNextQuestion();
     } else {
-        getCodingQuestions();
+        generateCodingQuestions();
     }
 }
 
-async function startSpeechRecognition(questionIndex) {
-    try {
-        const audioBlob = await recordAudio();
-        const formData = new FormData();
-        formData.append("audio", audioBlob, "audio.webm");
-
-        const response = await fetch("/speech-to-text", {
-            method: "POST",
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to convert speech to text.");
-        }
-
-        const result = await response.json();
-        document.getElementById(`answer_${questionIndex}`).value = result.text;
-    } catch (error) {
-        console.error("Error during speech recognition:", error);
-        alert("An error occurred during speech recognition.");
-    }
-}
-async function recordAudio() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new MediaRecorder(stream);
-    let audioChunks = [];
-
-    return new Promise((resolve, reject) => {
-        mediaRecorder.ondataavailable = event => {
-            audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-            resolve(audioBlob);
-        };
-
-        mediaRecorder.onerror = error => {
-            reject(error);
-        };
-
-        mediaRecorder.start();
-
-        // Stop recording after 5 seconds
-        setTimeout(() => {
-            mediaRecorder.stop();
-        }, 5000); // Adjust the recording duration as needed
-    });
-}
-
-
-function submitAnswer() {
-    const answerInput = document.querySelector(`#answer_${currentQuestionIndex}`);
-    const answer = answerInput.value.trim();
-
-    if (answer === "") {
-        alert("Please provide an answer.");
-        return;
-    }
-
-    // Store answer and move to the next question
-    answers[`answer_${currentQuestionIndex}`] = answer;
-    currentQuestionIndex++;
-    displayNextQuestion();
-}
-
-async function getCodingQuestions() {
+async function generateCodingQuestions() {
     showSpinner();
     try {
         const response = await fetch("/generate-coding-question", {
-            method: "POST"
+            method: "POST",
         });
 
         if (!response.ok) {
@@ -178,68 +120,42 @@ async function getCodingQuestions() {
         codingQuestions = result.questions;
         displayNextCodingQuestion();
     } catch (error) {
-        console.error("Error fetching coding questions:", error);
-        alert("An error occurred while fetching the coding questions. Please try again.");
-    }
-    finally {
+        console.error("Error generating coding questions:", error);
+    } finally {
         hideSpinner(); // Hide spinner after the fetch completes
     }
 }
 
 function displayNextCodingQuestion() {
-    const codingQuestionContainer = document.getElementById("coding-question");
-    codingQuestionContainer.innerHTML = ""; // Clear any previous coding question
+    const questionsContainer = document.getElementById("questions");
+    questionsContainer.innerHTML = `
+        <p>${codingQuestions[currentCodingQuestionIndex]}</p>
+        <textarea id="coding_answer"></textarea>
+        <br>
+        <button onclick="saveCodingAnswer()">Next</button>
+    `;
+}
+
+function saveCodingAnswer() {
+    const answer = document.getElementById("coding_answer").value;
+    answers[`coding_question_${currentCodingQuestionIndex + 1}`] = answer;
+    currentCodingQuestionIndex++;
 
     if (currentCodingQuestionIndex < codingQuestions.length) {
-        codingQuestionContainer.innerHTML = `
-            <h2>Coding Question ${currentCodingQuestionIndex + 1}</h2>
-            <p>${codingQuestions[currentCodingQuestionIndex]}</p>
-            <textarea id="coding-solution_${currentCodingQuestionIndex}" placeholder="Write your code here..." style="width: 100%; height: 100%;"></textarea>
-            <div style="display: flex; justify-content: center; margin-top: 10px;">
-                <button onclick="submitCodingSolution()" class="btn-submit" style="display: inline-block; padding: 12px 24px; margin: 10px 0; border: none; border-radius: 5px; background-color: #2a9d8f; color: #fff; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">Done</button>
-            </div>
-        `;
+        displayNextCodingQuestion();
     } else {
-        // Once all coding questions are done, show the submit button
-        codingQuestionContainer.innerHTML = `
-            <button
-                id="submit-answers-button"
-                onclick="evaluateAllAnswers()"
-                class="btn-submit"
-            >
-                Submit Answers
-            </button>
-        `;
-        document.getElementById("submit-answers-button").disabled = false;
+        document.getElementById("submit-answers-button").style.display = "block";
     }
 }
 
-
-function submitCodingSolution() {
-    const solution = document.getElementById(`coding-solution_${currentCodingQuestionIndex}`).value.trim();
-
-    if (solution === "") {
-        alert("Please provide a solution.");
-        return;
-    }
-
-    // Store coding solution and move to the next coding question
-    answers[`coding_solution_${currentCodingQuestionIndex}`] = solution;
-    currentCodingQuestionIndex++;
-    displayNextCodingQuestion();
-}
-
-async function evaluateAllAnswers() {
+async function submitAnswers() {
     showSpinner();
-    // Disable and hide the button immediately after it is clicked
-    const submitButton = document.getElementById("submit-answers-button");
-    submitButton.disabled = true;
-    submitButton.style.display = "none";
-
     try {
         const response = await fetch("/evaluate-answers", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify(answers),
         });
 
@@ -248,35 +164,19 @@ async function evaluateAllAnswers() {
         }
 
         const result = await response.json();
-        const score = parseFloat(result.score); // Ensure score is treated as a number
+        
+        // Hide the questions box, answer fields, and buttons
+        document.getElementById("questions").style.display = "none";
+        document.getElementById("submit-answers-button").style.display = "none";
 
-        // Display the score and application status
+        // Display the score in the result-container
         const resultContainer = document.getElementById("result-container");
-        if (!resultContainer) {
-            // Create a container if it doesn't exist
-            const newResultContainer = document.createElement("div");
-            newResultContainer.id = "result-container";
-            document.body.appendChild(newResultContainer);
-        }
-
-        const message = score >= 7
-            ? "Your application has been accepted!"
-            : "Your application has been rejected.";
-
-        document.getElementById("result-container").innerHTML = `
-            <p>Your total score is: ${score}</p>
-            <p style="font-weight: bold; color: ${score >= 7 ? 'green' : 'red'};">${message}</p>
-        `;
+        resultContainer.innerHTML = `<h2>Your score: ${result.score}</h2>`;
     } catch (error) {
         console.error("Error evaluating answers:", error);
-        alert("An error occurred while evaluating your answers. Please try again.");
-        // Re-enable the button if something goes wrong
-        submitButton.disabled = false;
-        submitButton.style.display = "block";
-    }
-    finally {
+        alert("An error occurred while evaluating the answers. Please try again.");
+    } finally {
         hideSpinner(); // Hide spinner after the fetch completes
     }
 }
-
 
