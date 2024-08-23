@@ -59,6 +59,7 @@ async function uploadCv() {
                 userInfo.innerHTML = `
                     <p>Welcome, ${result.user_name}</p>
                     <p>Email: ${result.email_address}</p>
+                    
                 `;
             } else {
                 console.error("User info container not found");
@@ -86,10 +87,12 @@ function displayTryAgainButton() {
 function displayNextQuestion() {
     const questionsContainer = document.getElementById("questions");
     questionsContainer.innerHTML = `
+        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <p>${questions[currentQuestionIndex]}</p>
         <textarea id="answer"></textarea>
         <br>
-        <button onclick="saveAnswer()">Next</button>
+        <button onclick="saveAnswer()" class="btn-submit" style="margin: 0; height: 100%; display: flex; justify-content: center; align-items: center;">Next</button>
+        </div>
     `;
 }
 
@@ -129,10 +132,12 @@ async function generateCodingQuestions() {
 function displayNextCodingQuestion() {
     const questionsContainer = document.getElementById("questions");
     questionsContainer.innerHTML = `
+        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <p>${codingQuestions[currentCodingQuestionIndex]}</p>
         <textarea id="coding_answer"></textarea>
         <br>
-        <button onclick="saveCodingAnswer()">Next</button>
+        <button onclick="saveCodingAnswer()" class="btn-submit" style="margin: 0; height: 100%; display: flex; justify-content: center; align-items: center;">Next</button>
+        </div>
     `;
 }
 
