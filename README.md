@@ -1,6 +1,8 @@
 # Aqua
   Job Application Chatbot
-    
+    <div id="header" align ="center">
+  <img src="https://github.com/usmanmalik07/Aqua/blob/main/static/audio/logo1.png" height="40%" width="40%">
+</div>
 
 ### Project Description : 
     A job Application chatbot in which users can upload their cv and select their desired field.
