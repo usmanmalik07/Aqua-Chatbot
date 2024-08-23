@@ -59,9 +59,11 @@ def evaluate_responses(responses: dict) -> dict:
         )
         
         # Extract the total score from the response
-        total_score = response.choices[0].message['content'].strip()
+        total_score_str = response.choices[0].message['content'].strip()
+        # Convert the score to an integer if possible, otherwise default to 0
+        total_score = int(total_score_str) if total_score_str.isdigit() else 0
         
         return {"score": total_score}
     except Exception as e:
         print(f"Error evaluating responses: {e}")
-        return {"score": "Error"}
+        return {"score": 0}  # Return 0 in case of an error

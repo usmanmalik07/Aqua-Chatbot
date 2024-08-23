@@ -25,7 +25,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 90%;
     height: 200%;
     margin: 0 auto;
     padding: 5 20px;
@@ -202,13 +202,23 @@ textarea {
 }
 /* About Us Section */
 .about-us {
-    margin: 50px auto;
+    margin: auto;
     padding: 30px;
     background: rgba(0, 0, 0, 0.85); /* Slightly darker background */
     border-radius: 1px; /* Rounded corners */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Pronounced shadow */
     text-align: center;
     color: #fff;
+}
+.user-info {
+    margin: 20px 0;
+    padding: 10px;
+    
+    
+    border-radius: 5px;
+}
+.user-info p {
+    margin: 5px 0;
 }
 
 .about-logo {
