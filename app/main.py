@@ -73,13 +73,16 @@ async def evaluate_answers(answers: dict):
         # Debugging output
         print("Received score response:", score_response)
 
-        # Ensure the score is a number
+        # Extract the numeric score from the response
+        import re
         if isinstance(score_response, dict) and 'score' in score_response:
-            score = score_response['score']
+            # Use regex to extract the numeric score
+            score_match = re.search(r'\d+', score_response['score'])
+            score = int(score_match.group()) if score_match else None
         else:
             score = score_response
-
-        if not isinstance(score, (int, float)):
+        # Ensure the score is a valid number
+        if score is None or not isinstance(score, (int, float)):
             raise ValueError("Score is not a valid number.")
         
         # Send email if score is greater than 7

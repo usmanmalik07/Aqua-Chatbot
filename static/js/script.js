@@ -211,6 +211,11 @@ function submitCodingSolution() {
 }
 
 async function evaluateAllAnswers() {
+    // Disable and hide the button immediately after it is clicked
+    const submitButton = document.getElementById("submit-answers-button");
+    submitButton.disabled = true;
+    submitButton.style.display = "none";
+
     try {
         const response = await fetch("/evaluate-answers", {
             method: "POST",
@@ -245,5 +250,9 @@ async function evaluateAllAnswers() {
     } catch (error) {
         console.error("Error evaluating answers:", error);
         alert("An error occurred while evaluating your answers. Please try again.");
+        // Re-enable the button if something goes wrong
+        submitButton.disabled = false;
+        submitButton.style.display = "block";
     }
 }
+
