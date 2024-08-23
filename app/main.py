@@ -32,17 +32,17 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Connect to MongoDB
 db = get_database()
-
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     with open("templates/index.html", "r") as file:
+        
         html_content = file.read()
     return HTMLResponse(content=html_content, status_code=200)
 
 # Add a global variable or a way to store the email address
 email_address = None
 
-@app.post("/upload-cv")
+@app.post("/upload-cv") 
 async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
     global email_address
     try:

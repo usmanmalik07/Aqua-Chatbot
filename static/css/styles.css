@@ -108,6 +108,42 @@ label {
     color: #2a9d8f;
     font-weight: bold; /* Bolder labels for emphasis */
 }
+/* Loading Container */
+#loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#loading-container h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fff; /* Adjust color if needed */
+}
+
+/* Spinner CSS */
+.spinner {
+    width: 50px; /* Adjust size if needed */
+    height: 50px; /* Adjust size if needed */
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #3498db;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loading Text */
+#loading-text {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #fff; /* Adjust color if needed */
+}
 
 input[type="file"],
 input[type="text"] {

@@ -22,7 +22,11 @@
       </header>
 
       <div class="container">
-        <h1>Aqua</h1>
+        <div id="loading-container">
+          <h1>Aqua</h1>
+          <div id="loading-spinner" class="spinner" style="display: none;"></div>
+          <p id="loading-text" style="display: none;">Loading</p>
+      </div>
         <form id="cv-form" onsubmit="event.preventDefault(); uploadCv();">
           <div class="form-group">
             <label for="cv">Upload CV:</label>
@@ -34,10 +38,14 @@
           </div>
           <button type="submit" class="btn-submit">Submit CV</button>
         </form>
+        <!-- Spinner HTML -->
+
+
 
         <div id="questions" class="form-group"></div>
         <div id="coding-question" class="form-group"></div>
         <div id="result-container"></div>
+        
       </div>
 
       <!-- Companies Section -->

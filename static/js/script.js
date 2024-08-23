@@ -5,7 +5,17 @@ let currentCodingQuestionIndex = 0;
 let answers = {}; // To store answers for all questions
 document.getElementById("submit-answers-button").disabled = true;
 
+// Function to show the spinner
+function showSpinner() {
+    document.getElementById("loading-spinner").style.display = "block";
+}
+
+// Function to hide the spinner
+function hideSpinner() {
+    document.getElementById("loading-spinner").style.display = "none";
+}
 async function uploadCv() {
+    showSpinner();
     const formData = new FormData();
     formData.append("cv", document.getElementById("cv").files[0]);
     formData.append("job_field", document.getElementById("job_field").value);
@@ -21,6 +31,7 @@ async function uploadCv() {
         }
 
         const result = await response.json();
+        
         console.log(result);
 
         if (result.questions && result.questions.length > 0 && result.questions[0] === "The job field does not match the CV text. No questions generated.") {
@@ -46,6 +57,9 @@ async function uploadCv() {
     } catch (error) {
         console.error("Error uploading CV:", error);
         alert("An error occurred while uploading the CV. Please try again.");
+    }
+    finally {
+        hideSpinner(); // Hide spinner after the fetch completes
     }
 }
 
@@ -150,6 +164,7 @@ function submitAnswer() {
 }
 
 async function getCodingQuestions() {
+    showSpinner();
     try {
         const response = await fetch("/generate-coding-question", {
             method: "POST"
@@ -165,6 +180,9 @@ async function getCodingQuestions() {
     } catch (error) {
         console.error("Error fetching coding questions:", error);
         alert("An error occurred while fetching the coding questions. Please try again.");
+    }
+    finally {
+        hideSpinner(); // Hide spinner after the fetch completes
     }
 }
 
@@ -196,6 +214,7 @@ function displayNextCodingQuestion() {
     }
 }
 
+
 function submitCodingSolution() {
     const solution = document.getElementById(`coding-solution_${currentCodingQuestionIndex}`).value.trim();
 
@@ -211,6 +230,7 @@ function submitCodingSolution() {
 }
 
 async function evaluateAllAnswers() {
+    showSpinner();
     // Disable and hide the button immediately after it is clicked
     const submitButton = document.getElementById("submit-answers-button");
     submitButton.disabled = true;
@@ -254,5 +274,9 @@ async function evaluateAllAnswers() {
         submitButton.disabled = false;
         submitButton.style.display = "block";
     }
+    finally {
+        hideSpinner(); // Hide spinner after the fetch completes
+    }
 }
+
 
