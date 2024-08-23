@@ -172,6 +172,7 @@ async function submitAnswers() {
         // Display the score in the result-container
         const resultContainer = document.getElementById("result-container");
         resultContainer.innerHTML = `<h2>Your score: ${result.score}</h2>`;
+        resultContainer.innerHTML = `<h2>Thankyou for applying. An email has been sent to you .</h2>`;
     } catch (error) {
         console.error("Error evaluating answers:", error);
         alert("An error occurred while evaluating the answers. Please try again.");
