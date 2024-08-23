@@ -11,6 +11,7 @@ from .database import connect_to_mongo, get_database
 from .openai_utils import generate_questions, evaluate_responses
 import requests
 import re
+from mailjet_rest import Client
 load_dotenv()
 
 app = FastAPI()
@@ -78,8 +79,17 @@ async def upload_cv(cv: UploadFile = File(...), job_field: str = Form(...)):
         # Extract the result from the response
         extraction_result = response.choices[0].message['content'].strip()
         lines = extraction_result.split("\n")
-        user_name = lines[0].replace("Name: ", "").strip()
-        email_address = lines[1].replace("Email: ", "").strip()
+        
+        # Clean and format the extracted name and email
+        def clean_text(text: str) -> str:
+            return re.sub(r'[\s\-]+', ' ', text).strip()
+        
+        def clean_email(email: str) -> str:
+            return re.sub(r'[^\w\.-@]', '', email).strip()
+
+        if len(lines) >= 2:
+            user_name = clean_text(lines[0].replace("Name: ", ""))
+            email_address = clean_email(lines[1].replace("Email: ", ""))
 
         # Optional: Format the name for a more specific output
         formatted_name = f"{user_name}"
@@ -114,19 +124,18 @@ async def evaluate_answers(answers: dict):
 
         # Calculate the total score
         total_score = sum(normal_scores.values()) + sum(coding_scores.values())
-        total_score = total_score / (len(normal_answers)+len(coding_answers))
+        total_score = total_score / (len(normal_answers) + len(coding_answers)) if (len(normal_answers) + len(coding_answers)) > 0 else 0
 
-        # Send email if score is greater than 7
-        if total_score > 7 and email_address != 'no-reply@example.com':
+        # Send email regardless of the score
+        if email_address and email_address != 'no-reply@example.com':
             subject = "Your Job Application Status"
-            body = f"Congratulations! Your application score is {total_score}. You have been accepted."
+            body = f"Your application has been evaluated. Your total score is {total_score}. Thank you for applying!"
             send_email(email_address, subject, body)
 
         return JSONResponse(content={"score": total_score})
     except Exception as e:
         print(f"Error evaluating answers: {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
-
 @app.post("/generate-coding-question")
 async def generate_coding_question():
     try:
@@ -187,22 +196,54 @@ async def evaluate_coding_solution(solution: str):
 
 def send_email(to_address: str, subject: str, body: str):
     try:
-        elastic_email_api_key = os.getenv('ELASTIC_EMAIL_API_KEY')
-        response = requests.post(
-            'https://api.elasticemail.com/v2/email/send',
-            data={
-                'apikey': elastic_email_api_key,
-                'from': 'usmanmalik.dev@gmail.com',  # Replace with your Elastic Email sender address
-                'to': to_address,
-                'subject': subject,
-                'text': body
-            }
-        )
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        return response.json()
+        mailjet_api_key = os.getenv('MAILJET_API_KEY')
+        mailjet_secret_key = os.getenv('MAILJET_SECRET_KEY')
+
+        if not mailjet_api_key or not mailjet_secret_key:
+            raise ValueError("Mailjet API key or secret key not found in environment variables.")
+
+        mailjet_client = Client(auth=(mailjet_api_key, mailjet_secret_key), version='v3.1')
+
+        data = {
+            'Messages': [
+                {
+                    'From': {
+                        'Email': 'usmanmalikk2004@gmail.com',  # Replace with your Mailjet sender address
+                        'Name': 'Your Name'
+                    },
+                    'To': [
+                        {
+                            'Email': to_address,
+                            'Name': 'Recipient Name'
+                        }
+                    ],
+                    'Subject': subject,
+                    'TextPart': body
+                }
+            ]
+        }
+
+        result = mailjet_client.send.create(data=data)
+        response_data = result.json()
+
+        if result.status_code == 200:
+            return {"status": "Email sent successfully."}
+        else:
+            # Log and raise an error with detailed response content
+            error_message = response_data.get('ErrorMessage', 'Unknown error')
+            print(f"Mailjet response: {response_data}")
+            raise ValueError(f"Failed to send email: {error_message}")
+
     except requests.RequestException as e:
-        print(f"Error sending email: {e}")
+        print(f"RequestException: {e}")
         return {"error": str(e)}
+    except ValueError as e:
+        print(f"ValueError: {e}")
+        return {"error": str(e)}
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": str(e)}
+
 
 if __name__ == "__main__":
     import uvicorn
