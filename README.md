@@ -35,28 +35,28 @@ A job application chatbot where users can upload their CV and select their desir
 ## Working
 
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_2.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_2.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_1.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_1.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_3.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_3.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_4.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_4.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_5.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_5.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_6.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_6.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_7.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_7.png" height="100%" width="100%">
 </div>
 <div align="center">
-  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_8.png" height="80%" width="80%">
+  <img src="https://github.com/usmanmalik07/Aqua-Chatbot/blob/main/working/Screenshot_8.png" height="100%" width="100%">
 </div>
 
 ## How to Clone and Run the Project
