@@ -104,3 +104,4 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 This will start the server on http://127.0.0.1:8000.
+For more information please email me.
