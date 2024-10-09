@@ -178,7 +178,18 @@ textarea {
     text-align: center;
     color: #FFD700; /* Gold color for results */
 }
-
+#submit-answers-button {
+    display: inline-block;
+    padding: 14px 28px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #2a9d8f;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
+}
 .btn-submit {
     display: inline-block;
     padding: 14px 28px;
