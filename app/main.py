@@ -7,7 +7,7 @@ import io
 import openai
 from dotenv import load_dotenv
 import os
-from .database import connect_to_mongo, get_database
+#from .database import connect_to_mongo, get_database
 from .openai_utils import generate_questions, evaluate_responses
 import requests
 import re
@@ -32,7 +32,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Connect to MongoDB
-db = get_database()
+#db = get_database()
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
